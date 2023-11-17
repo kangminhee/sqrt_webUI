@@ -5,8 +5,8 @@ import 'package:user_web_ui/models/food_list.dart';
 import 'package:user_web_ui/models/game_list.dart';
 
 class FoodApiService {
-  static String baseUrl = "https://webtoon-crawler.nomadcoders.workers.dev";
-  static String foodmenu = "today";
+  static String baseUrl = "http://112.219.28.28:3000";
+  static String foodmenu = "menu";
 
   static Future<List<FoodList>> getFoodList() async {
     try {

@@ -88,7 +88,7 @@ class FoodMenuTab extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          food.id,
+                          food.price,
                           style: const TextStyle(
                             fontSize: 18,
                           ),

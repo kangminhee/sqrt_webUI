@@ -88,7 +88,7 @@ class GameMenuTab extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          game.id,
+                          game.name,
                           style: const TextStyle(
                             fontSize: 18,
                           ),
