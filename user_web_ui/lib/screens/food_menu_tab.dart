@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sqrt/models/food_list.dart';
-import 'package:sqrt/services/api_service.dart';
+import 'package:user_web_ui/models/food_list.dart';
+import 'package:user_web_ui/services/api_service.dart';
 
 class FoodMenuTab extends StatelessWidget {
   FoodMenuTab({super.key});

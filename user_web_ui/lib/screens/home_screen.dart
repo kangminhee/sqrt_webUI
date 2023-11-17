@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sqrt/screens/food_menu_tab.dart';
-import 'package:sqrt/screens/game_menu_tab.dart';
-import 'package:sqrt/screens/info_tab.dart';
+import 'package:user_web_ui/screens/food_menu_tab.dart';
+import 'package:user_web_ui/screens/game_menu_tab.dart';
+import 'package:user_web_ui/screens/info_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
