@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:user_web_ui/models/food_list.dart';
 import 'package:user_web_ui/services/api_service.dart';
 
-class FoodMenuTab extends StatelessWidget {
-  FoodMenuTab({Key? key}) : super(key: key);
+class FoodMenuTab extends StatefulWidget {
+  const FoodMenuTab({Key? key}) : super(key: key);
 
+  @override
+  State<FoodMenuTab> createState() => _FoodMenuTabState();
+}
+
+class _FoodMenuTabState extends State<FoodMenuTab> {
   final Future<List<FoodList>> foods = FoodApiService.getFoodList();
 
   @override
@@ -88,7 +93,7 @@ class FoodMenuTab extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          food.price,
+                          food.price.toString(),
                           style: const TextStyle(
                             fontSize: 18,
                           ),

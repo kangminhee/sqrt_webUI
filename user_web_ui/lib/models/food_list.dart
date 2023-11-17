@@ -1,6 +1,7 @@
+//our api
 class FoodList {
-  final String name, price, image;
-  final int id;
+  final String name, image;
+  final int id, price;
 
   FoodList.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -8,3 +9,14 @@ class FoodList {
         price = json['price'],
         image = json['image'];
 }
+//*/
+/* nico test api
+class FoodList {
+  final String name, id, image;
+
+  FoodList.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['title'],
+        image = json['thumb'];
+}
+*/
