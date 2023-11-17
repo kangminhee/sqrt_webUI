@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _widgetOptions = [
     FoodMenuTab(),
-    const GameMenuTab(),
+    GameMenuTab(),
     const InfoTab(),
   ];
 
