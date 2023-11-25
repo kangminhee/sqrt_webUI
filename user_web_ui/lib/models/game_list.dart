@@ -1,4 +1,5 @@
 //our api
+/*
 class GameList {
   final String name, image;
   final int price, id;
@@ -9,8 +10,9 @@ class GameList {
         price = json['price'],
         image = json['image'];
 }
+*/
 
-/*nico test api
+//*nico test api
 class GameList {
   final String name, id, image;
 
@@ -19,4 +21,4 @@ class GameList {
         name = json['title'],
         image = json['thumb'];
 }
-*/
+//*/

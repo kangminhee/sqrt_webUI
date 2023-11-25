@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:user_web_ui/models/game_list.dart';
-import 'package:user_web_ui/services/api_service.dart';
+import 'package:user_web_ui/services/game_api.dart';
 
 class GameMenuTab extends StatelessWidget {
   GameMenuTab({super.key});
@@ -88,7 +88,7 @@ class GameMenuTab extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          game.price.toString(),
+                          game.name, //price.toString(),
                           style: const TextStyle(
                             fontSize: 18,
                           ),

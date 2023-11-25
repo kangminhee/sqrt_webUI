@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:user_web_ui/models/food_list.dart';
-import 'package:user_web_ui/services/api_service.dart';
+import 'package:user_web_ui/services/food_api.dart';
 
 class FoodMenuTab extends StatefulWidget {
   const FoodMenuTab({Key? key}) : super(key: key);
