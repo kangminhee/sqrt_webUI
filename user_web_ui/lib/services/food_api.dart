@@ -7,13 +7,8 @@ import 'package:user_web_ui/models/food_list.dart';
 
 class FoodApiService {
   //our test api
-  static String baseUrl = "http://112.219.28.28:3000";
-  static String foodmenu = "menu";
-
-  /*nico test api
-  static String baseUrl = "https://webtoon-crawler.nomadcoders.workers.dev";
-  static String foodmenu = "today";
-  */
+  static String baseUrl = "http://127.0.0.1:3000";
+  static String foodmenu = "food_menu";
 
   static Future<List<FoodList>> getFoodList() async {
     try {
@@ -24,7 +19,7 @@ class FoodApiService {
         final List<dynamic> foods = jsonDecode(response.body);
         return foods.map((food) => FoodList.fromJson(food)).toList();
       } else {
-        // 상태 코드가 200이 아닌 경우 오류 메시지 반환
+        // 상태 코드가 200이 아닌 경우 오류 메ㅊ시지 반환
         throw Exception('Failed to load food list');
       }
     } catch (e) {

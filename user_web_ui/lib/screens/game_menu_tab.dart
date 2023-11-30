@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:user_web_ui/models/game_list.dart';
+import 'package:user_web_ui/models/item_order.dart';
 import 'package:user_web_ui/services/game_api.dart';
 
-class GameMenuTab extends StatelessWidget {
-  GameMenuTab({super.key});
+List<OrderList> orderGames = [];
 
+class GameMenuTab extends StatefulWidget {
+  const GameMenuTab({super.key});
+
+  @override
+  State<GameMenuTab> createState() => _GameMenuTabState();
+}
+
+class _GameMenuTabState extends State<GameMenuTab> {
   final Future<List<GameList>> games = GameApiService.getGameList();
 
   @override

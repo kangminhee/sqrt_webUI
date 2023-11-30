@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:user_web_ui/models/food_list.dart';
-import 'package:user_web_ui/services/food_api.dart';
+import 'package:user_web_ui/models/food_list.dart'; //load food list
+import 'package:user_web_ui/services/food_api.dart'; //load food list from api server
 
 class FoodMenuTab extends StatefulWidget {
   const FoodMenuTab({Key? key}) : super(key: key);
@@ -10,7 +10,8 @@ class FoodMenuTab extends StatefulWidget {
 }
 
 class _FoodMenuTabState extends State<FoodMenuTab> {
-  final Future<List<FoodList>> foods = FoodApiService.getFoodList();
+  final Future<List<FoodList>> foods =
+      FoodApiService.getFoodList(); //download food list
 
   @override
   Widget build(BuildContext context) {
@@ -101,57 +102,11 @@ class _FoodMenuTabState extends State<FoodMenuTab> {
                       ],
                     ),
                     const SizedBox(height: 35),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            _showPopup(context, '첫 번째 버튼');
-                          },
-                          child: const Text('+ 1'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _showPopup(context, '두 번째 버튼');
-                          },
-                          child: const Text('0'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _showPopup(context, '세 번째 버튼');
-                          },
-                          child: const Text('- 1'),
-                        ),
-                        const SizedBox(
-                          width: 100,
-                        )
-                      ],
-                    ),
                   ],
                 ),
               ),
             ],
           ),
-        );
-      },
-    );
-  }
-
-  void _showPopup(BuildContext context, String buttonText) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('팝업 창'),
-          content: Text('$buttonText 클릭됨'),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // 팝업 창 닫기
-              },
-              child: const Text('닫기'),
-            ),
-          ],
         );
       },
     );

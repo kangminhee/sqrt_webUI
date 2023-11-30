@@ -8,8 +8,21 @@ class InfoTab extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime serverTime = DateTime.now().subtract(const Duration(hours: 1));
 
-    return Center(
-      child: TimeElapsedWidget(serverTime: serverTime),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 2,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.pink,
+        title: const Text(
+          "들어온지 몇 분 됐냐면용",
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+      ),
+      body: TimeElapsedWidget(
+        serverTime: serverTime,
+      ),
     );
   }
 }
@@ -50,7 +63,7 @@ class _TimeElapsedWidgetState extends State<TimeElapsedWidget> {
   @override
   Widget build(BuildContext context) {
     return Text(
-      '경과 시간: ${_timeElapsed.inHours}:${_timeElapsed.inMinutes % 60}:${_timeElapsed.inSeconds % 60}',
+      '경과 시간: ${_timeElapsed.inHours % 24}:${_timeElapsed.inMinutes % 60}:${_timeElapsed.inSeconds % 60}',
       style: const TextStyle(fontSize: 24),
     );
   }
