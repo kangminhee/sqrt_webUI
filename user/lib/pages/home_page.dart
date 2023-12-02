@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:user/pages/basket_page.dart';
+import 'package:user/pages/cart.dart';
 import 'package:user/pages/food_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
-                      return const BasketPage();
+                      return const CartPage();
                     },
                   ),
                 );

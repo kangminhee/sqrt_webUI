@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:user_web_ui/models/game_list.dart';
+<<<<<<< HEAD
 import 'package:user_web_ui/models/item_order.dart';
 import 'package:user_web_ui/services/game_api.dart';
+=======
+import 'package:user_web_ui/services/api_service.dart';
+>>>>>>> parent of 434cb51 (before shopping cart)
 
 List<OrderList> orderGames = [];
 
@@ -96,7 +100,7 @@ class _GameMenuTabState extends State<GameMenuTab> {
                           ),
                         ),
                         Text(
-                          game.name, //price.toString(),
+                          game.price.toString(),
                           style: const TextStyle(
                             fontSize: 18,
                           ),

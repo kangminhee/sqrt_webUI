@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:user_web_ui/models/food_list.dart'; //load food list
 import 'package:user_web_ui/services/food_api.dart'; //load food list from api server
+=======
+import 'package:user_web_ui/models/food_list.dart';
+import 'package:user_web_ui/services/api_service.dart';
+>>>>>>> parent of 434cb51 (before shopping cart)
 
 class FoodMenuTab extends StatefulWidget {
   const FoodMenuTab({Key? key}) : super(key: key);

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class FoodList {
   final String name, image;
   final int id, price;
@@ -27,4 +29,17 @@ class GameList {
 
     return game;
   }
+}
+
+class OrderList {
+  int id;
+  int count;
+
+  OrderList({required this.id, required this.count});
+}
+
+class OrderModel extends ChangeNotifier {
+  final List<OrderList> _foodOrderList = [];
+
+  List<OrderList> get foodOrderList => _foodOrderList;
 }
