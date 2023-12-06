@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:user/pages/cart.dart';
 import 'package:user/pages/food_page.dart';
+import 'package:user/pages/game_page.dart';
+import 'package:user/pages/info_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,8 +16,8 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _widgetOptions = [
     const FoodPage(),
-    const FoodPage(),
-    const FoodPage(),
+    const GamePage(),
+    const InfoPage(),
   ];
 
   @override

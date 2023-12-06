@@ -1,0 +1,398 @@
+#include "WiFiEsp.h"
+#include "SoftwareSerial.h"
+
+SoftwareSerial Serial1(2, 3); // RX, TX
+
+class CharSplitter {
+  private:
+  char _char;
+  char _temp[100];
+  int _temp_len;
+  char _line[100];
+  public:
+  CharSplitter(char delimiter) {
+    _char = delimiter;
+    _temp[0] = '\0';
+    _temp_len = 0;
+    _line[0] = '\0';
+  }
+  bool write(char ch) {
+    if(ch == _char) {
+      strcpy(_line, _temp);
+      _temp[0] = '\0';
+      _temp_len = 0;
+      return true;
+    } else {
+      _temp[_temp_len] = ch;
+      _temp[_temp_len+1] = '\0';
+      _temp_len++;
+      return false;
+    }
+  }
+  char* line() {
+    return _line;
+  }
+};
+
+char ssid[] = "monad";            // your network SSID (name)
+char pass[] = "freemonad";        // your network password
+int status = WL_IDLE_STATUS;     // the Wifi radio's status
+
+char server[] = "112.219.28.28";
+int port = 5000;
+
+WiFiEspClient client;
+
+CharSplitter char_splitter('\n');
+
+
+// ========== LINE TRACER
+#define dir1 12 //왼쪽모터
+#define dir2 13
+#define Lsp 11
+#define dir3 8
+#define dir4 9
+#define Rsp 10
+#define LIR A2 //A0
+#define RIR A0 //A2
+
+#define sens(x)  (analogRead(x) < standard) //참이면 검은 라인 위에 있는 것
+
+unsigned long BOOST_TIME = 50;
+unsigned long last_boost_time_l = 0;
+unsigned long last_boost_time_r = 0;
+int level_l = 0;
+int level_r = 0;
+int standard = 50;
+int full = 230; // 100;
+int speed = 60; // 38;
+int rsp = 0;
+int state = -1;
+
+void linetracing_setup() {
+    pinMode(dir1, OUTPUT);
+    pinMode(dir2, OUTPUT);
+    pinMode(Rsp, OUTPUT);
+    pinMode(dir3, OUTPUT);
+    pinMode(dir4, OUTPUT);
+    pinMode(Lsp, OUTPUT);
+    pinMode(LIR, INPUT);
+    pinMode(RIR, INPUT);
+    digitalWrite(dir1, HIGH); 
+    digitalWrite(dir2, LOW);
+    digitalWrite(dir3, HIGH);
+    digitalWrite(dir4, LOW);
+}
+
+void set_left(unsigned long current_millis, int level) {
+  int last_level = level_l;
+  level_l = level;
+  if(level == 0) {
+    analogWrite(Lsp, level);
+  } else {
+    if(last_level == 0 && !(current_millis - last_boost_time_l < BOOST_TIME)) {
+      last_boost_time_l = current_millis;
+    }
+  }
+}
+void set_right(unsigned long current_millis, int level) {
+  int last_level = level_r;
+  level_r = level;
+  if(level == 0) {
+    analogWrite(Rsp, level);
+  } else {
+    if(last_level == 0 && !(current_millis - last_boost_time_r < BOOST_TIME)) {
+      last_boost_time_r = current_millis;
+    }
+  }
+}
+void motor_poll(unsigned long current_millis) {
+  if(level_l != 0) {
+    if(current_millis - last_boost_time_l < BOOST_TIME) {
+      analogWrite(Lsp, full);
+    } else {
+      analogWrite(Lsp, level_l);
+    }
+  }
+
+  if(level_r != 0) {
+    if(current_millis - last_boost_time_r < BOOST_TIME) {
+      analogWrite(Rsp, full);
+    } else {
+      analogWrite(Rsp, level_r);
+    }
+  }
+}
+
+void linetracing_poll() {
+  bool sl = sens(LIR);
+  bool sr = sens(RIR);
+
+  // Serial.print(sl ? 1 : 0);
+  // Serial.print(" ");
+  // Serial.print(sr ? 1 : 0);
+  // Serial.print("\n");
+
+  unsigned long current_millis = millis();
+    if(!sl && sr){ //왼쪽은 흰바닥, 오른쪽은 검은 라인 위
+      set_left(current_millis, speed);
+      set_right(current_millis, rsp);
+    }
+    else if(sl && !sr){ //왼쪽은 검은 라인, 오른쪽은 흰 바닥
+      set_left(current_millis, rsp);
+      set_right(current_millis, speed);
+    }
+    else {
+      set_left(current_millis, speed);
+      set_right(current_millis, speed);
+    }
+}
+
+
+void setup() {
+  Serial.begin(9600);
+  Serial1.begin(9600);
+  WiFi.init(&Serial1);
+
+  // check for the presence of the shield
+  if (WiFi.status() == WL_NO_SHIELD) {
+    Serial.println("WiFi shield not present");
+    // don't continue
+    while (true);
+  }
+  
+  // attempt to connect to WiFi network
+  while ( status != WL_CONNECTED) {
+    Serial.print("Attempting to connect to WPA SSID: ");
+    Serial.println(ssid);
+    // Connect to WPA/WPA2 network
+    status = WiFi.begin(ssid, pass);
+  }
+
+  Serial.println("Connected to the network");
+
+  linetracing_setup();
+  rfid_setup();
+
+  // Test
+  // pinMode(5, OUTPUT);
+  // pinMode(6, OUTPUT);
+
+  connect();
+}
+
+// Robot state
+bool forwarding = true;
+int number_to_rotate = 0;
+
+// Network state
+enum NetworkState {
+  NOT_READY = 0,
+  READY = 1,
+  DISPOSED = 2
+};
+
+bool init_sent = false;
+NetworkState network_state = NOT_READY;
+
+char PW[] = "WOWbb";
+char ROBOT_ID[] = "ROBOT_2";
+
+void connect() {
+  init_sent = false;
+  network_state = NOT_READY;
+  client = WiFiEspClient();
+  client.connect(server, port);
+}
+
+void handle(char* line) {
+  Serial.print("GOT LINE: ");
+  Serial.println(line);
+  if(network_state == NOT_READY) {
+    // Okay
+    if(line[0] == 'K') {
+      network_state = READY;
+      Serial.println("OK SIGN");
+    }
+  }
+  if(network_state == READY) {
+    // if(line[0] == 'L') {
+    //   int level = atoi(&line[2]);
+    //   analogWrite(5, level);
+    // }
+    // if(line[0] == 'F') {
+    //   int freq = atoi(&line[2]);
+    //   tone(6, freq);
+    // }
+    // if(line[0] == 'S') {
+    //   noTone(6);
+    // }
+    if(line[0] == 'F') {
+      forwarding = true;
+    }
+    if(line[0] == 'R') {
+      number_to_rotate = atoi(&line[2]);
+    }
+    if(line[0] == 'S') {
+      forwarding = false;
+    }
+  }
+}
+
+// ========= RFID
+// 라이브러리 해더 
+#include <SPI.h>
+#include <MFRC522.h>
+
+// SS(Chip Select)과 RST(Reset) 핀 설정
+// 나머지 PIN은 SPI 라이브러리를 사용하기에 별도의 설정이 필요없다.
+#define SS_PIN 4 //슬레이브 설정
+#define RST_PIN 19
+
+// 라이브러리 생성
+MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
+
+MFRC522::MIFARE_Key key; 
+
+//이전 ID와 비교하기위한 변수
+byte nuidPICC[4];
+
+void rfid_setup() { 
+  return;
+  SPI.begin(); // SPI 시작
+  rfid.PCD_Init(); // RFID 시작
+
+  //초기 키 ID 초기화
+  for (byte i = 0; i < 6; i++) {
+    key.keyByte[i] = 0xFF;
+  }
+  
+  Serial.println(F("This code scan the MIFARE Classsic NUID."));
+  Serial.print(F("Using the following key:"));
+  printHex(key.keyByte, MFRC522::MF_KEY_SIZE);
+}
+ 
+void rfid_poll() {
+  return;
+  // 카드가 인식되었다면 다음으로 넘어가고 아니면 더이상 
+  // 실행 안하고 리턴
+  if ( ! rfid.PICC_IsNewCardPresent())
+    return;
+
+  // ID가 읽혀졌다면 다음으로 넘어가고 아니면 더이상 
+  // 실행 안하고 리턴
+  if ( ! rfid.PICC_ReadCardSerial())
+    return;
+
+  //카드의 타입을 읽어온다.
+  MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
+
+  // MIFARE 방식인지 확인하고 아니면 리턴
+  if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI &&  
+    piccType != MFRC522::PICC_TYPE_MIFARE_1K &&
+    piccType != MFRC522::PICC_TYPE_MIFARE_4K) {
+    Serial.println(F("Your tag is not of type MIFARE Classic."));
+    return;
+  }
+
+  // 만약 바로 전에 인식한 RF 카드와 다르다면..
+  if (rfid.uid.uidByte[0] != nuidPICC[0] || 
+    rfid.uid.uidByte[1] != nuidPICC[1] || 
+    rfid.uid.uidByte[2] != nuidPICC[2] || 
+    rfid.uid.uidByte[3] != nuidPICC[3] ) {
+    // ID를 저장해둔다.    
+    for (byte i = 0; i < 4; i++) {
+      nuidPICC[i] = rfid.uid.uidByte[i];
+    }
+   
+    //모니터 출력
+    Serial.print(F("In hex: "));
+    //16진수로 변환해서 출력
+    printHex(rfid.uid.uidByte, rfid.uid.size);
+    Serial.println();
+    forwarding = false;
+  }
+
+  // PICC 종료
+  rfid.PICC_HaltA();
+
+  // 암호화 종료(?)
+  rfid.PCD_StopCrypto1();
+
+  //다시 처음으로 돌아감.
+}
+
+//16진수로 변환하는 함수
+void printHex(byte *buffer, byte bufferSize) {
+  for (byte i = 0; i < bufferSize; i++) {
+    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+    Serial.print(buffer[i], HEX);
+  }
+}
+
+//10진수로 변환하는 함수
+void printDec(byte *buffer, byte bufferSize) {
+  for (byte i = 0; i < bufferSize; i++) {
+    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+    Serial.print(buffer[i], DEC);
+  }
+}
+
+unsigned long lastConnectionTime = 0;         // last time you connected to the server, in milliseconds
+const unsigned long postingInterval = 5000L; // delay between updates, in milliseconds
+
+void loop() {
+  unsigned long current_millis = millis();
+
+  // Wifi
+  while(client.available()) {
+    char ch = client.read();
+    // Serial.println((int)ch);
+    if(char_splitter.write(ch)) {
+      handle(char_splitter.line());
+    }
+  }
+
+  // Server reconnecting
+  if (current_millis - lastConnectionTime > postingInterval) {
+    if(network_state == READY) {
+    client.print(random(100));
+    client.print('\n');
+    }
+    if(network_state == READY && forwarding) {
+      client.print("I'm FORWARDING");
+    client.print('\n');
+    }
+    if(client.connected()) {
+      if(init_sent == false) {
+        init_sent = true;
+        client.print('I');
+        client.print(' ');
+        client.print(PW);
+        client.print(' ');
+        client.print(ROBOT_ID);
+        client.print('\n');
+      }
+    } else {
+      Serial.println("NOT CONNECTED! RECONNECT!");
+      connect();
+    }
+    lastConnectionTime = current_millis;
+  }
+
+
+  // Line tracing
+  if(forwarding) {
+    // Serial.print("WTF");
+    linetracing_poll();
+  } else {
+
+    analogWrite(Rsp, 0);
+    analogWrite(Lsp, 0);
+  }
+
+  motor_poll(current_millis);
+  if(number_to_rotate) {
+
+  }
+}

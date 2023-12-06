@@ -32,6 +32,10 @@ dependencies:
     sdk: flutter
 
   http: ^1.1.0
+  shared_preferences: ^2.0.15
+  path_provider: ^2.0.10
+  sqflite: ^2.0.2+1
+  badges: ^2.0.2
 
 
   cached_network_image: ^3.2.3
@@ -42,6 +46,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^6.1.1
   ant_design_flutter: ^0.0.1+5
+  scoped_model: ^2.0.0
 
 
 dev_dependencies:

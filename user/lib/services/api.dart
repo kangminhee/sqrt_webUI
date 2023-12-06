@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
-import 'package:user/models/product.dart';
+import 'package:user/models/cartmodel.dart';
+// import 'package:user/models/product.dart';
 
 class FoodApiService {
   // static String baseUrl = "http://112.219.28.28:3000";
-  static String baseUrl = "http://127.0.0.1:3000";
+  static String baseUrl = "http://127.0.0.1:5050";
   static String subUrl = "food_menu";
 
   static Future<List<FoodList>> getFoodList() async {
@@ -29,8 +30,9 @@ class FoodApiService {
 }
 
 class GameApiService {
-  static String baseUrl = "http://112.219.28.28:3000";
-  static String subUrl = "food_menu";
+  // static String baseUrl = "http://112.219.28.28:3000";
+  static String baseUrl = "http://127.0.0.1:5050";
+  static String subUrl = "game_menu";
 
   static Future<List<GameList>> getGameList() async {
     try {
@@ -52,25 +54,26 @@ class GameApiService {
 }
 
 class OrderApiService {
-  // static String baseUrl = "http://112.219.28.28:3000";
-  static String baseUrl = "http://127.0.0.1:3000";
-  static String subUrl = "order";
+  static String baseUrl = "http://112.219.28.28:3000";
+  // static const String baseUrl = "http://127.0.0.1:5050";
+  static const String subUrl = "order";
 
-  static Future<List<FoodList>> getFoodList() async {
-    try {
-      final url = Uri.parse('$baseUrl/$subUrl');
-      final response = await http.get(url);
+  static Future<http.Response> postOrder(
+      List<FoodList> foodcart, List<GameList> gamecart) async {
+    Uri url = Uri.parse('$baseUrl/$subUrl');
 
-      if (response.statusCode == 200) {
-        final List<dynamic> foods = jsonDecode(response.body);
-        return foods.map((food) => FoodList.fromJson(food)).toList();
-      } else {
-        // 상태 코드가 200이 아닌 경우 오류 메시지 반환
-        throw Exception('Failed to load food list');
-      }
-    } catch (e) {
-      // 네트워크 오류나 기타 예외 처리
-      throw Exception('Error occurred: $e');
-    }
+    String jsonBody = jsonEncode({
+      'qrId': 'minesweeper',
+      'foods': foodcart.map((product) => product.toJson()).toList(),
+      'games': gamecart.map((product) => product.toJson()).toList(),
+    });
+
+    return http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonBody,
+    );
   }
 }
