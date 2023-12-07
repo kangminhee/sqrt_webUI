@@ -1,0 +1,118 @@
+
+import { io } from 'socket.io-client'; 
+
+
+const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+const ctx = canvas.getContext('2d')!;
+
+const robotList = document.getElementById("robotlist")!;
+
+const BASE_URL = "http://112.219.28.28:3000";
+
+const socket = io("ws://112.219.28.28:3000");
+
+type GraphInfo = {
+    nodes: { id: number, rfid: string, x: number, y: number }[],
+    edges: { id: number, firstNodeId: number, secondNodeId: number }[]
+};
+
+async function main() {
+    const graphInfo: GraphInfo = await (await fetch(BASE_URL + "/graph")).json();
+
+    const nodesMap = new Map<number, GraphInfo['nodes'][number]>();
+    for(const node of graphInfo.nodes) nodesMap.set(node.id, node);
+
+    let robotPosition : null | number = null;
+
+    function render() {
+        robotPosition = graphInfo.nodes[4].id;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Edge
+        for(const edge of graphInfo.edges) {
+            ctx.beginPath();
+
+            const firstNode = nodesMap.get(edge.firstNodeId)!;
+            const secondNode = nodesMap.get(edge.secondNodeId)!;
+            ctx.moveTo(firstNode.x, firstNode.y);
+            ctx.lineTo(secondNode.x, secondNode.y);
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = "black";
+            ctx.stroke();
+        }
+
+        // Node
+        for(const node of graphInfo.nodes) {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 10, 0, Math.PI * 2);
+            if(robotPosition == node.id)
+                ctx.fillStyle = "red";
+            else
+                ctx.fillStyle = "blue";
+            ctx.fill();
+        }
+
+    }
+
+    render();
+
+
+    // WebSocket
+    const robotMap =  new Map<string, Object>();
+
+    async function fetchRobots() {
+        robotMap.clear();
+        const robotInfos = await (await fetch(BASE_URL + '/robot', {cache: "no-store"})).json();
+        console.log(robotInfos);
+        for(const robotInfo of robotInfos) {
+            robotMap.set(robotInfo.id, robotInfo);
+        }
+    }
+    function updateRobotListUI() {
+        robotList.innerHTML = '';
+
+        for(const [robotId, robot] of robotMap) {
+            const li = document.createElement('li');
+            li.innerText = robotId;
+            robotList.appendChild(li);
+        }
+    }
+
+    socket.on('robotadded', async robotId => {
+        await fetchRobots();
+        updateRobotListUI();
+    });
+    socket.on('robotremoved', async robotId => {
+        await fetchRobots();
+        updateRobotListUI();
+    });
+    await fetchRobots();
+    updateRobotListUI();
+
+    socket.on('doneforward', rfid_ => {
+        const node = graphInfo.nodes.find(({ rfid }) => rfid === rfid_);
+        if(node)
+            robotPosition = node.id;
+        render();
+    });
+}
+
+main();
+
+
++++++++
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Administrator Web</h1>
+    <h2>Graph</h2>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <h2>Robot list</h2>
+    <ul id="robotlist"></ul>
+</body>
+</html>
