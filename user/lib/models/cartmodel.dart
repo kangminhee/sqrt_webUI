@@ -79,7 +79,7 @@ class GameList {
   GameList.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
-        image = json['image_url'],
+        image = json['imageUrl'],
         price = json['price'],
         quantity = 1;
 
@@ -109,7 +109,7 @@ class FoodList {
   FoodList.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
-        image = json['image_url'],
+        image = json['imageUrl'],
         price = json['price'],
         quantity = 1;
 

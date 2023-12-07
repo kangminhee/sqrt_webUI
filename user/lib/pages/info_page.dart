@@ -13,26 +13,46 @@ class _InfoPageState extends State<InfoPage> {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(140), // 패딩 값을 줄입니다
-        child: Row(
+        child: Column(
           children: [
             ElevatedButton(
-              onPressed: () {
-                forward.gg();
-              },
-              child: const Text('Go!'),
+              onPressed: () {},
+              child: const Text("호출"),
             ),
             const SizedBox(
-              width: 30,
+              height: 30,
             ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-              ),
-              onPressed: () {
-                stop.gg();
-              },
-              child: const Text('Stop!'),
-            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    left.gg();
+                  },
+                  child: const Text('Left!'),
+                ),
+                const SizedBox(
+                  width: 30,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    forward.gg();
+                  },
+                  child: const Text('Forward!'),
+                ),
+                const SizedBox(
+                  width: 30,
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  ),
+                  onPressed: () {
+                    right.gg();
+                  },
+                  child: const Text('right!'),
+                ),
+              ],
+            )
           ],
         ));
   }
