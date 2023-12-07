@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 class forward {
@@ -60,6 +62,33 @@ class stop {
     }
   }
 }
+
+class OrderApi {
+  static String baseUrl = "http://112.219.28.28:3000";
+  // static const String baseUrl = "http://127.0.0.1:5050";
+  // static const String subUrl = "order";
+
+  static Future<http.Response> postOrder() async {
+    Uri url = Uri.parse(baseUrl); //$subUrl');
+
+    //qrId 받아오기
+
+    String jsonBody = jsonEncode(
+      {
+        'qrId': " b",
+      },
+    );
+
+    return http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonBody,
+    );
+  }
+}
+
 
 // class Post {
 //   static String baseUrl = "http://112.219.28.28:3000";

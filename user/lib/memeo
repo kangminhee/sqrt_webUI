@@ -5,3 +5,62 @@
   // List<String> pathSegments = qrId.pathSegments;
   // String desiredPart = pathSegments.isNotEmpty ? pathSegments.last : '';
   // }
+
+  //
+import 'package:flutter/material.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late IO.Socket socket;
+
+  @override
+  void initState() {
+    super.initState();
+    initSocket();
+  }
+
+  void initSocket() {
+    socket = IO.io('http://112.219.28.28:3000', <String, dynamic>{
+      'transports': ['websocket'],
+    });
+
+    socket.onConnect((_) {
+      print('connected');
+    });
+
+    socket.onDisconnect((_) {
+      print('disconnected');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //... 나머지 위젯 구조
+  }
+
+  void _onItemTapped(int index) {
+    //...
+    if (socket.connected) {
+      socket.emit('ping', 'message');
+    } else {
+      print('Socket is not connected.');
+    }
+  }
+
+  @override
+  void dispose() {
+    socket.dispose();
+    super.dispose();
+  }
+}

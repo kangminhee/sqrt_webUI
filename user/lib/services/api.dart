@@ -4,6 +4,7 @@ import 'dart:html';
 
 import 'package:http/http.dart' as http;
 import 'package:user/models/cartmodel.dart';
+
 // import 'package:user/models/product.dart';
 
 class FoodApiService {
@@ -63,9 +64,9 @@ class OrderApiService {
       List<FoodList> foodcart, List<GameList> gamecart) async {
     Uri url = Uri.parse('$baseUrl/$subUrl');
 
+    //qrId 받아오기
     var wholeUrl = window.location.href;
     var uri = Uri.parse(wholeUrl);
-
     var qrId = uri.queryParameters['qr_id'];
     if (qrId != null) {
       // 여기서 qrId 변수를 사용하여 필요한 작업을 수행
@@ -75,11 +76,15 @@ class OrderApiService {
     }
     print("url: $wholeUrl");
 
-    String jsonBody = jsonEncode({
-      'qrId': qrId,
-      'foods': foodcart.map((product) => product.toJson()).toList(),
-      'games': gamecart.map((product) => product.toJson()).toList(),
-    });
+    //socket
+
+    String jsonBody = jsonEncode(
+      {
+        'qrId': qrId,
+        'foods': foodcart.map((product) => product.toJson()).toList(),
+        'games': gamecart.map((product) => product.toJson()).toList(),
+      },
+    );
 
     return http.post(
       url,

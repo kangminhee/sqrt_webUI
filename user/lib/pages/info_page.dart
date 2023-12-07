@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:user/services/uno.dart';
 
@@ -11,49 +13,28 @@ class InfoPage extends StatefulWidget {
 class _InfoPageState extends State<InfoPage> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(140), // 패딩 값을 줄입니다
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text("호출"),
+    return Center(
+      // Center 위젯을 사용하여 화면 중앙에 배치
+      child: SizedBox(
+        // SizedBox를 사용하여 버튼 크기를 50x50으로 지정
+        width: 300,
+        height: 100,
+        child: ElevatedButton(
+          onPressed: () {
+            OrderApi();
+          },
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.zero, // 버튼 내부의 패딩을 제거
+          ),
+          child: const Text(
+            'Come on!',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    left.gg();
-                  },
-                  child: const Text('Left!'),
-                ),
-                const SizedBox(
-                  width: 30,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    forward.gg();
-                  },
-                  child: const Text('Forward!'),
-                ),
-                const SizedBox(
-                  width: 30,
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                  ),
-                  onPressed: () {
-                    right.gg();
-                  },
-                  child: const Text('right!'),
-                ),
-              ],
-            )
-          ],
-        ));
+          ),
+        ),
+      ),
+    );
   }
 }
