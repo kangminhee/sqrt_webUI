@@ -5,7 +5,7 @@ import 'package:user/pages/cart.dart';
 import 'package:user/pages/food_page.dart';
 import 'package:user/pages/game_page.dart';
 import 'package:user/pages/info_page.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,18 +15,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
   @override
   void initState() {
     initSocket();
     super.initState();
   }
 
-  int _selectedIndex = 0;
-
-  late IO.Socket socket;
+  late Socket socket;
 
   void initSocket() {
-    socket = IO.io('ws://112.219.28.28:3000', <String, dynamic>{
+    socket = io('ws://112.219.28.28:3000', <String, dynamic>{
       // 'transports': ['websocket'],
     });
 
@@ -38,11 +37,9 @@ class _HomePageState extends State<HomePage> {
       print('disconnected');
     });
 
-    socket.on('pong', (data) {
-      print(data);
-      // setState(() {
-      //    // 여기에 print 문 추가
-      // });
+    socket.on('tong', (data) {
+      print("ㅎㅎ: $data");
+      myDialog(context);
     });
   }
 
@@ -99,13 +96,49 @@ class _HomePageState extends State<HomePage> {
     });
 
     if (socket.connected) {
-      socket.emit('ping', '문정윤바보');
+      socket.emit('ting', '문정윤바보');
       print("dddd");
     } else {
       print('Socket is not connected.');
     }
   }
 }
+
+void myDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        child: Container(
+          width: double.infinity, // Full width
+          height: 100, // Fixed height of 100
+          padding: const EdgeInsets.all(10), // Padding for aesthetics
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "팝업이다.",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10), // Spacing for a cleaner look
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: const Icon(Icons.close),
+                  tooltip: 'Close', // Tooltip for better UX
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
 
 //
 //   socket.onConnect((_) {

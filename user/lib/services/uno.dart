@@ -63,9 +63,37 @@ class stop {
   }
 }
 
-class OrderApi {
+class Come {
   static String baseUrl = "http://112.219.28.28:3000";
   // static const String baseUrl = "http://127.0.0.1:5050";
+  static const String subUrl = "return";
+
+  static Future<http.Response> postOrder() async {
+    Uri url = Uri.parse(baseUrl); //$subUrl');
+
+    //qrId 받아오기
+
+    String jsonBody = jsonEncode(
+      {
+        'qrId': " b",
+      },
+    );
+
+    return http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonBody,
+    );
+  }
+}
+
+class Return {
+  static String baseUrl = "http://112.219.28.28:3000";
+  // static const String baseUrl = "http://127.0.0.1:5050";
+  static const String subUrl = "return_return";
+
   // static const String subUrl = "order";
 
   static Future<http.Response> postOrder() async {

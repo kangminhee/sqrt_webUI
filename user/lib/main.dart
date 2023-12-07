@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:user/models/cartmodel.dart'; // CartModel을 임포트
 import 'package:user/pages/home_page.dart';
 import 'package:scoped_model/scoped_model.dart';
-// import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 void main() {
   runApp(const MyApp());
