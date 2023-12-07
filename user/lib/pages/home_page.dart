@@ -95,12 +95,12 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index;
     });
 
-    if (socket.connected) {
-      socket.emit('ting', '문정윤바보');
-      print("dddd");
-    } else {
-      print('Socket is not connected.');
-    }
+    // if (socket.connected) {
+    //   socket.emit('ting', '아 졸았다...');
+    //   print("dddd");
+    // } else {
+    //   print('Socket is not connected.');
+    // }
   }
 }
 
@@ -117,10 +117,30 @@ void myDialog(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "팝업이다.",
+                "배달 완료!\n서빙 로봇에게서 주문하신 것을 받아주세요!",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 10), // Spacing for a cleaner look
+              const SizedBox(height: 70), // Spacing for a cleaner look
+              SizedBox(
+                width: double.infinity,
+                height: 70,
+                child: ElevatedButton(
+                  onPressed: () {
+                    print("return");
+                    // Return();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.zero, // 버튼 내부의 패딩을 제거
+                  ),
+                  child: const Text(
+                    '수령 완료 및 돌려 보내기',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
               Align(
                 alignment: Alignment.topRight,
                 child: IconButton(

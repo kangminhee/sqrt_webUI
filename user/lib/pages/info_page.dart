@@ -24,6 +24,7 @@ class _InfoPageState extends State<InfoPage> {
             height: 100,
             child: ElevatedButton(
               onPressed: () {
+                // print("Come");
                 Come();
               },
               style: ElevatedButton.styleFrom(
@@ -45,13 +46,14 @@ class _InfoPageState extends State<InfoPage> {
             height: 100,
             child: ElevatedButton(
               onPressed: () {
+                print("return");
                 Return();
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.zero, // 버튼 내부의 패딩을 제거
               ),
               child: const Text(
-                '리턴!',
+                '돌려보내기!',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w600,

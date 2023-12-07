@@ -109,11 +109,15 @@ class _FoodPageState extends State<FoodPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ElevatedButton(
-                          child: const Text("Add"),
-                          onPressed: () => ScopedModel.of<CartModel>(context,
-                                  rebuildOnChange: false)
-                              .addFood(food),
+                        SizedBox(
+                          width: 300,
+                          child: ElevatedButton(
+                            onPressed: () => ScopedModel.of<CartModel>(context,
+                                    rebuildOnChange: false)
+                                .addFood(food),
+                            style: const ButtonStyle(),
+                            child: const Text("Add"),
+                          ),
                         ),
                       ],
                     ),

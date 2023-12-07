@@ -96,7 +96,7 @@ class _CartPageState extends State<CartPage> {
                                   IconButton(
                                     icon: const Icon(Icons.delete),
                                     onPressed: () {
-                                      model.clearFoodCart();
+                                      model.removeFood(item);
                                     },
                                   ),
                                 ],

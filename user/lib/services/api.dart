@@ -32,8 +32,8 @@ class FoodApiService {
 }
 
 class GameApiService {
-  // static String baseUrl = "http://112.219.28.28:3000";
-  static String baseUrl = "http://127.0.0.1:5050";
+  static String baseUrl = "http://112.219.28.28:3000";
+  // static String baseUrl = "http://127.0.0.1:5050";
   static String subUrl = "game_menu";
 
   static Future<List<GameList>> getGameList() async {
