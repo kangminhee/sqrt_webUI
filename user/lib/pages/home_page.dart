@@ -107,7 +107,6 @@ class _HomePageState extends State<HomePage> {
 
   void _onItemTapped(int index) {
     print('$index');
-    myDialog(context);
     setState(() {
       _selectedIndex = index;
     });
@@ -124,11 +123,12 @@ class _HomePageState extends State<HomePage> {
 void myDialog(BuildContext context) {
   showDialog(
     context: context,
+    barrierDismissible: false, // Dialog 외부를 탭해도 닫히지 않음
     builder: (BuildContext context) {
       return Dialog(
         child: Container(
           width: double.infinity, // Full width
-          height: 100, // Fixed height of 100
+          height: 160, // 적절한 높이로 조정
           padding: const EdgeInsets.all(10), // Padding for aesthetics
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -137,25 +137,21 @@ void myDialog(BuildContext context) {
                 "배달 완료!\n서빙 로봇에게서 주문하신 것을 받아주세요!",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 70), // Spacing for a cleaner look
-              SizedBox(
-                width: double.infinity,
-                height: 70,
-                child: ElevatedButton(
-                  onPressed: () {
-                    print("return");
-                    OrderReturn.postOrder();
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.zero, // 버튼 내부의 패딩을 제거
-                  ),
-                  child: const Text(
-                    '수령 완료 및 돌려 보내기',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
+              const SizedBox(height: 10), // 높이 조정
+              ElevatedButton(
+                onPressed: () async {
+                  print("return");
+                  await OrderReturn.postOrder(); // 비동기 처리
+                  Navigator.of(context).pop(); // 버튼 클릭 시 Dialog 닫기
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero, // 버튼 내부의 패딩을 제거
+                ),
+                child: const Text(
+                  '수령 완료 및 돌려 보내기',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -166,6 +162,100 @@ void myDialog(BuildContext context) {
     },
   );
 }
+
+
+// void myDialog(BuildContext context) {
+//   showDialog(
+//     context: context,
+//     barrierDismissible: false, // Dialog 외부를 탭해도 닫히지 않음
+//     builder: (BuildContext context) {
+//       return Dialog(
+//         child: Container(
+//           width: double.infinity, // Full width
+//           height: 100, // Fixed height of 100
+//           padding: const EdgeInsets.all(10), // Padding for aesthetics
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               const Text(
+//                 "배달 완료!\n서빙 로봇에게서 주문하신 것을 받아주세요!",
+//                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+//               ),
+//               const SizedBox(height: 70), // Spacing for a cleaner look
+//               SizedBox(
+//                 width: double.infinity,
+//                 height: 100,
+//                 child: ElevatedButton(
+//                   onPressed: () {
+//                     print("return");
+//                     OrderReturn.postOrder();
+//                     Navigator.of(context).pop(); // 버튼 클릭 시 Dialog 닫기
+//                   },
+//                   style: ElevatedButton.styleFrom(
+//                     padding: EdgeInsets.zero, // 버튼 내부의 패딩을 제거
+//                   ),
+//                   child: const Text(
+//                     '수령 완료 및 돌려 보내기',
+//                     style: TextStyle(
+//                       fontSize: 15,
+//                       fontWeight: FontWeight.w600,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }
+
+// void myDialog(BuildContext context) {
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return Dialog(
+//         child: Container(
+//           width: double.infinity, // Full width
+//           height: 100, // Fixed height of 100
+//           padding: const EdgeInsets.all(10), // Padding for aesthetics
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               const Text(
+//                 "배달 완료!\n서빙 로봇에게서 주문하신 것을 받아주세요!",
+//                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+//               ),
+//               const SizedBox(height: 70), // Spacing for a cleaner look
+//               SizedBox(
+//                 width: double.infinity,
+//                 height: 100,
+//                 child: ElevatedButton(
+//                   onPressed: () {
+//                     print("return");
+//                     OrderReturn.postOrder();
+//                     // Navigator.of(context).pop();
+//                   },
+//                   style: ElevatedButton.styleFrom(
+//                     padding: EdgeInsets.zero, // 버튼 내부의 패딩을 제거
+//                   ),
+//                   child: const Text(
+//                     '수령 완료 및 돌려 보내기',
+//                     style: TextStyle(
+//                       fontSize: 15,
+//                       fontWeight: FontWeight.w600,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }
 
 
 //
