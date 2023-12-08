@@ -6,6 +6,7 @@ import 'package:user/pages/food_page.dart';
 import 'package:user/pages/game_page.dart';
 import 'package:user/pages/info_page.dart';
 import 'package:socket_io_client/socket_io_client.dart';
+import 'package:user/services/uno.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
 
   void initSocket() {
     socket = io(
-      'ws://112.219.28.28:3000/order_return',
+      'ws://112.219.28.28:3000',
       <String, dynamic>{
         // 'transports': ['websocket'],
       },
@@ -106,6 +107,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onItemTapped(int index) {
     print('$index');
+    myDialog(context);
     setState(() {
       _selectedIndex = index;
     });
@@ -142,7 +144,8 @@ void myDialog(BuildContext context) {
                 child: ElevatedButton(
                   onPressed: () {
                     print("return");
-                    // Return();
+                    OrderReturn.postOrder();
+                    Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero, // 버튼 내부의 패딩을 제거
@@ -154,16 +157,6 @@ void myDialog(BuildContext context) {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: const Icon(Icons.close),
-                  tooltip: 'Close', // Tooltip for better UX
                 ),
               ),
             ],
