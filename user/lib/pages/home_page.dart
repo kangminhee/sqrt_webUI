@@ -25,22 +25,37 @@ class _HomePageState extends State<HomePage> {
   late Socket socket;
 
   void initSocket() {
-    socket = io('ws://112.219.28.28:3000', <String, dynamic>{
-      // 'transports': ['websocket'],
-    });
+    socket = io(
+      'ws://112.219.28.28:3000/order_return',
+      <String, dynamic>{
+        // 'transports': ['websocket'],
+      },
+    );
 
-    socket.onConnect((_) {
-      print('connected');
-    });
+    socket.onConnect(
+      (_) {
+        print('connected');
+      },
+    );
 
-    socket.onDisconnect((_) {
-      print('disconnected');
-    });
+    socket.onDisconnect(
+      (_) {
+        print('disconnected');
+      },
+    );
 
-    socket.on('tong', (data) {
-      print("ㅎㅎ: $data");
-      myDialog(context);
-    });
+    socket.on(
+      'orderarrivedtovisitor',
+      (data) {
+        print("ㅎㅎ: $data");
+        var wholeUrl = window.location.href;
+        var uri = Uri.parse(wholeUrl);
+        var qrId = uri.queryParameters['qr_id'];
+        if (data == qrId) {
+          myDialog(context);
+        }
+      },
+    );
   }
 
   final List<Widget> _widgetOptions = [
